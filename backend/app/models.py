@@ -1,11 +1,17 @@
 from django.db import models
 
-# Create your models here.
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    manager = models.ForeignKey('Employee', on_delete=models.SET_NULL, null=True, related_name='managed_departments')
+
+    def __str__(self):
+        return self.name
+
 class Employee(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     position = models.CharField(max_length=100)
-    department = models.CharField(max_length=100)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     hire_date = models.DateField()
     salary = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -30,13 +36,6 @@ class Performance(models.Model):
 
     def __str__(self):
         return f"{self.employee.name} - {self.review_date}"
-
-class Department(models.Model):
-    name = models.CharField(max_length=100)
-    manager = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='managed_departments')
-
-    def __str__(self):
-        return self.name
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
